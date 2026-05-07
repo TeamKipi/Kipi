@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIB — Đăng ký nhu cầu tài chính</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #004B8D;
+    --blue-mid: #0062B3;
+    --blue-light: #E6F0F9;
+    --blue-lighter: #f0f6fc;
+    --accent: #E6291C;
+    --gold: #F5A623;
+    --gray-50: #f5f7fa;
+    --gray-100: #eaecf0;
+    --gray-200: #d8dce4;
+    --gray-400: #9098a8;
+    --gray-700: #3a4254;
+    --gray-900: #181f2e;
+    --white: #ffffff;
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--gray-50); }
+  body { font-family: 'Be Vietnam Pro', sans-serif; color: var(--gray-900); min-height: 100vh; padding: 0 0 60px; }
+
+  .header { background: var(--blue); padding: 22px 20px 36px; position: relative; overflow: hidden; }
+  .header-circle1 { position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,0.06); pointer-events: none; }
+  .header-circle2 { position: absolute; bottom: 10px; left: -30px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,0.04); pointer-events: none; }
+  .header::after { content: ''; position: absolute; bottom: -20px; left: 0; right: 0; height: 40px; background: var(--gray-50); border-radius: 50% 50% 0 0 / 40px 40px 0 0; }
+  .header-inner { display: flex; align-items: center; gap: 14px; max-width: 480px; margin: 0 auto; position: relative; z-index: 1; }
+  .logo-box { width: 50px; height: 50px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 20px; font-weight: 700; color: var(--blue); letter-spacing: -1px; }
+  .header-text h1 { font-size: 17px; font-weight: 600; color: white; line-height: 1.25; }
+  .header-text p { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 3px; }
+
+  .promo-wrap { max-width: 480px; margin: 0 auto; padding: 0 16px; }
+  .promo-inner { background: var(--blue); border: 1.5px solid rgba(245,166,35,0.45); border-radius: var(--radius-lg); padding: 12px 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; overflow: hidden; position: relative; }
+  .promo-inner::before { content: ''; position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; background: rgba(245,166,35,0.07); }
+  .promo-icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(245,166,35,0.15); border: 1px solid rgba(245,166,35,0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; }
+  .promo-text { flex: 1; }
+  .promo-label { font-size: 10px; color: rgba(255,255,255,0.6); font-weight: 500; text-transform: uppercase; letter-spacing: 0.6px; }
+  .promo-code { font-size: 16px; font-weight: 700; color: var(--gold); letter-spacing: 0.5px; }
+  .promo-sub { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 1px; }
+
+  .body { max-width: 480px; margin: 0 auto; padding: 0 16px; }
+
+  .section { background: var(--white); border-radius: var(--radius-lg); padding: 18px; margin-bottom: 12px; border: 1px solid var(--gray-100); }
+  .section-label { font-size: 11px; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--gray-100); }
+
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { display: block; font-size: 12px; font-weight: 500; color: var(--gray-700); margin-bottom: 5px; }
+  .req { color: var(--accent); }
+
+  input[type=text], input[type=tel], select, textarea {
+    width: 100%; padding: 10px 12px; font-size: 14px;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    border: 1.5px solid var(--gray-200); border-radius: var(--radius);
+    background: var(--gray-50); color: var(--gray-900);
+    outline: none; transition: border-color 0.15s, background 0.15s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue-mid); background: var(--white); box-shadow: 0 0 0 3px rgba(0,98,179,0.08); }
+  textarea { resize: none; min-height: 80px; line-height: 1.6; }
+  select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239098a8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+
+  .referral-box { background: var(--blue-lighter); border: 1.5px solid #c2d8ee; border-radius: var(--radius); padding: 10px 12px; display: flex; align-items: center; gap: 10px; }
+  .referral-badge { background: var(--blue); color: white; font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 6px; white-space: nowrap; letter-spacing: 0.5px; }
+  .referral-desc { font-size: 12px; color: var(--blue); font-weight: 500; }
+
+  .nc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .nc-item { border: 1.5px solid var(--gray-200); border-radius: var(--radius); padding: 10px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.12s; background: var(--gray-50); user-select: none; }
+  .nc-item:hover { border-color: var(--blue-mid); background: var(--blue-lighter); }
+  .nc-item.on { border-color: var(--blue-mid); background: var(--blue-light); }
+  .nc-check { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid var(--gray-200); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.12s; }
+  .nc-item.on .nc-check { background: var(--blue); border-color: var(--blue); }
+  .nc-check svg { display: none; }
+  .nc-item.on .nc-check svg { display: block; }
+  .nc-icon { font-size: 18px; line-height: 1; }
+  .nc-label { font-size: 12px; font-weight: 500; color: var(--gray-700); line-height: 1.3; }
+  .nc-item.on .nc-label { color: var(--blue); }
+
+  .submit-wrap { padding: 0 16px; margin-top: 16px; }
+  .submit-btn { width: 100%; padding: 14px; background: var(--blue); color: white; border: none; border-radius: var(--radius-lg); font-family: 'Be Vietnam Pro', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; letter-spacing: 0.2px; transition: all 0.15s; }
+  .submit-btn:hover { background: var(--blue-mid); }
+  .submit-btn:active { transform: scale(0.98); }
+  .submit-btn:disabled { background: var(--gray-400); cursor: not-allowed; transform: none; }
+
+  .privacy { text-align: center; font-size: 11px; color: var(--gray-400); margin-top: 10px; line-height: 1.6; padding: 0 16px; }
+
+  .success-screen { display: none; max-width: 480px; margin: 40px auto; padding: 0 16px; text-align: center; }
+  .success-icon { width: 72px; height: 72px; border-radius: 50%; background: var(--blue-light); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; }
+  .success-title { font-size: 20px; font-weight: 600; margin-bottom: 8px; color: var(--gray-900); }
+  .success-sub { font-size: 14px; color: var(--gray-400); margin-bottom: 20px; line-height: 1.7; }
+  .success-code-badge { display: inline-block; background: var(--blue-light); color: var(--blue); font-size: 13px; font-weight: 600; padding: 5px 16px; border-radius: 20px; margin-bottom: 20px; }
+  .tags-wrap { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 24px; }
+  .tag { background: var(--blue-light); color: var(--blue); font-size: 12px; font-weight: 500; padding: 4px 12px; border-radius: 20px; }
+  .back-btn { padding: 12px 32px; background: white; color: var(--blue); border: 1.5px solid var(--blue); border-radius: var(--radius-lg); font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .back-btn:hover { background: var(--blue-lighter); }
+
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .err { font-size: 11px; color: var(--accent); margin-top: 4px; display: none; }
+  .field.invalid input, .field.invalid select, .field.invalid textarea { border-color: var(--accent); }
+  .field.invalid .err { display: block; }
+</style>
+</head>
+<body>
+
+<div id="form-view">
+  <div class="header">
+    <div class="header-circle1"></div>
+    <div class="header-circle2"></div>
+    <div class="header-inner">
+      <div class="logo-box">VIB</div>
+      <div class="header-text">
+        <h1>Đăng ký nhu cầu tài chính</h1>
+        <p>Đăng ký nhu cầu tài chính tại VIB Đồng Nai</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="promo-wrap">
+    <div class="promo-inner">
+      <div class="promo-icon">🎁</div>
+      <div class="promo-text">
+        <div class="promo-label">Mã giới thiệu</div>
+        <div class="promo-code">X95_Ưu đãi riêng cho Payroll Đồng Nai</div>
+        <div class="promo-sub">Tự động áp dụng khi gửi đăng ký</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <div class="section">
+      <div class="section-label">Thông tin liên hệ</div>
+
+      <div class="field" id="f-hoten-wrap">
+        <label>Họ và tên <span class="req">*</span></label>
+        <input type="text" id="f-hoten" placeholder="Nguyễn Văn A" autocomplete="name" />
+        <div class="err">Vui lòng nhập họ và tên</div>
+      </div>
+
+      <div class="field" id="f-sdt-wrap">
+        <label>Số điện thoại <span class="req">*</span></label>
+        <input type="tel" id="f-sdt" placeholder="0912 345 678" autocomplete="tel" inputmode="numeric" />
+        <div class="err">Vui lòng nhập số điện thoại hợp lệ</div>
+      </div>
+
+      <div class="field">
+        <label>Đơn vị công tác</label>
+        <input type="text" id="f-donvi" placeholder="VD: Công ty ABC, Kinh doanh" />
+      </div>
+
+      <div class="field">
+        <label>Mã giới thiệu</label>
+        <div class="referral-box">
+          <span class="referral-badge">X95</span>
+          <span class="referral-desc">Ưu đãi riêng cho Payroll Đồng Nai</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Nhu cầu quan tâm <span class="req" style="font-size:10px;letter-spacing:0">*</span></div>
+      <div class="nc-grid">
+        <div class="nc-item" data-val="Vay tiêu dùng" onclick="toggleNC(this)">
+          <div class="nc-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div class="nc-icon">💰</div><div class="nc-label">Vay tiêu dùng</div></div>
+        </div>
+        <div class="nc-item" data-val="Vay mua nhà / đất" onclick="toggleNC(this)">
+          <div class="nc-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div class="nc-icon">🏠</div><div class="nc-label">Vay mua nhà / đất</div></div>
+        </div>
+        <div class="nc-item" data-val="Vay mua xe" onclick="toggleNC(this)">
+          <div class="nc-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div class="nc-icon">🚗</div><div class="nc-label">Vay mua xe</div></div>
+        </div>
+        <div class="nc-item" data-val="Thẻ tín dụng" onclick="toggleNC(this)">
+          <div class="nc-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div class="nc-icon">💳</div><div class="nc-label">Thẻ tín dụng</div></div>
+        </div>
+        <div class="nc-item" data-val="Tài khoản / Lương VIB" onclick="toggleNC(this)">
+          <div class="nc-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div class="nc-icon">🏦</div><div class="nc-label">Tài khoản / Lương</div></div>
+        </div>
+        <div class="nc-item" data-val="Gửi tiết kiệm" onclick="toggleNC(this)">
+          <div class="nc-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div class="nc-icon">🐷</div><div class="nc-label">Gửi tiết kiệm</div></div>
+        </div>
+        <div class="nc-item" data-val="Bảo hiểm" onclick="toggleNC(this)">
+          <div class="nc-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div class="nc-icon">🛡️</div><div class="nc-label">Bảo hiểm</div></div>
+        </div>
+        <div class="nc-item" data-val="Khác" onclick="toggleNC(this)">
+          <div class="nc-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div class="nc-icon">✨</div><div class="nc-label">Khác</div></div>
+        </div>
+      </div>
+      <div class="err" id="nc-err" style="margin-top:8px">Vui lòng chọn ít nhất một nhu cầu</div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Chi tiết</div>
+      <div class="field">
+        <label>Chi nhánh VIB muốn giao dịch</label>
+        <select id="f-chinhanh">
+          <option value="VIB Chi nhánh Đồng Nai — Số 14K Võ Thị Sáu, Trấn Biên, TP Đồng Nai" selected>VIB Chi nhánh Đồng Nai — Số 14K Võ Thị Sáu, Trấn Biên, TP Đồng Nai</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Ghi chú thêm</label>
+        <textarea id="f-ghichu" placeholder="VD: Cần vay khoảng 200 triệu, muốn tư vấn buổi chiều..."></textarea>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="submit-wrap">
+    <button class="submit-btn" id="submit-btn" onclick="submitForm()">Gửi đăng ký — Mã X95</button>
+  </div>
+  <p class="privacy">🔒 Thông tin bảo mật tuyệt đối · Chỉ dùng để tư vấn sản phẩm VIB</p>
+</div>
+
+<!-- Success -->
+<div class="success-screen" id="success-view">
+  <div class="success-icon">
+    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="18" cy="18" r="18" fill="#E6F0F9"/>
+      <path d="M10 18l6 6 10-10" stroke="#004B8D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="success-title">Đăng ký thành công!</div>
+  <div class="success-sub">Chuyên viên VIB sẽ liên hệ với bạn<br>trong vòng <strong>24 giờ làm việc</strong>.</div>
+  <div class="success-code-badge">🎁 Mã ưu đãi X95 đã được ghi nhận</div>
+  <div class="tags-wrap" id="success-tags"></div>
+  <button class="back-btn" onclick="resetForm()">Đăng ký thêm</button>
+</div>
+
+<script>
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbza60XWfpCR7WpKk15WBru3oajKuZHmUHd2NuTYTdrnD8OhV4WnohAxiorF__iEpGy5Uw/exec';
+  const MA_GIOI_THIEU = 'X95_Ưu đãi riêng cho Payroll Đồng Nai';
+  let selected = new Set();
+
+  function toggleNC(el) {
+    const v = el.dataset.val;
+    if (selected.has(v)) { selected.delete(v); el.classList.remove('on'); }
+    else { selected.add(v); el.classList.add('on'); }
+  }
+
+  function validate() {
+    let ok = true;
+    const hoten = document.getElementById('f-hoten').value.trim();
+    const sdt = document.getElementById('f-sdt').value.trim();
+    document.getElementById('f-hoten-wrap').classList.toggle('invalid', !hoten);
+    if (!hoten) ok = false;
+    const sdtOk = /^(0|\+84)[0-9]{9,10}$/.test(sdt.replace(/\s/g,''));
+    document.getElementById('f-sdt-wrap').classList.toggle('invalid', !sdtOk);
+    if (!sdtOk) ok = false;
+    document.getElementById('nc-err').style.display = selected.size === 0 ? 'block' : 'none';
+    if (selected.size === 0) ok = false;
+    return ok;
+  }
+
+  async function submitForm() {
+    if (!validate()) return;
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Đang gửi...';
+    const data = {
+      timestamp: new Date().toLocaleString('vi-VN'),
+      hoten: document.getElementById('f-hoten').value.trim(),
+      sdt: document.getElementById('f-sdt').value.trim(),
+      donvi: document.getElementById('f-donvi').value.trim(),
+      nhu_cau: [...selected].join(', '),
+      chi_nhanh: document.getElementById('f-chinhanh').value,
+      ghi_chu: document.getElementById('f-ghichu').value.trim(),
+      ma_gioi_thieu: MA_GIOI_THIEU,
+    };
+    try {
+      if (SHEET_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+        await fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+      }
+      showSuccess();
+    } catch(e) { showSuccess(); }
+  }
+
+  function showSuccess() {
+    document.getElementById('success-tags').innerHTML = [...selected].map(s=>`<span class="tag">${s}</span>`).join('');
+    document.getElementById('form-view').style.display = 'none';
+    document.getElementById('success-view').style.display = 'block';
+    window.scrollTo(0,0);
+  }
+
+  function resetForm() {
+    selected.clear();
+    document.querySelectorAll('.nc-item').forEach(el=>el.classList.remove('on'));
+    ['f-hoten','f-sdt','f-donvi','f-ghichu'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('f-chinhanh').value='';
+    ['f-hoten-wrap','f-sdt-wrap'].forEach(id=>document.getElementById(id).classList.remove('invalid'));
+    document.getElementById('nc-err').style.display='none';
+    const btn=document.getElementById('submit-btn');
+    btn.disabled=false; btn.innerHTML='Gửi đăng ký — Mã X95';
+    document.getElementById('form-view').style.display='block';
+    document.getElementById('success-view').style.display='none';
+    window.scrollTo(0,0);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>🛍️ Quản Lý Bán Hàng</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--navy:#1A3C5E;--orange:#E67E22;--green:#27AE60;--red:#E74C3C;--bg:#EEF2F7;--border:#D5DDE8;--muted:#8696A7;--inp:#F6F8FA;--sh:0 2px 16px rgba(26,60,94,.10)}
+body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:#2C3E50;padding-bottom:72px;min-height:100vh}
+.hdr{background:linear-gradient(135deg,#1A3C5E,#1e6bab);padding:16px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.hdr h1{font-size:19px;font-weight:800;color:#fff}.hdr p{font-size:11px;color:rgba(255,255,255,.65);margin-top:1px}
+.tabs{display:flex;background:#fff;border-bottom:2px solid var(--border);position:sticky;top:58px;z-index:99}
+.tabs button{flex:1;padding:10px 4px;border:none;background:none;font-family:inherit;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent}
+.tabs button.on{color:var(--orange);border-bottom-color:var(--orange)}
+.pane{display:none;padding:12px}.pane.on{display:block}
+.card{background:#fff;border-radius:14px;box-shadow:var(--sh);margin-bottom:12px;overflow:hidden;border:1px solid var(--border)}
+.ch{padding:12px 14px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--border);background:#FAFBFC}
+.ch .ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;background:linear-gradient(135deg,#E67E22,#F39C12);flex-shrink:0}
+.ch h2{font-size:14px;font-weight:700;color:var(--navy);flex:1}
+.ch-btn{font-size:12px;color:var(--orange);font-weight:700;cursor:pointer;padding:4px 10px;background:#FFF3E8;border-radius:8px;border:none;font-family:inherit}
+.cb{padding:14px}
+label.lbl{font-size:10px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+input,select,textarea{width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--inp);font-family:inherit;font-size:14px;color:#2C3E50;outline:none;-webkit-appearance:none;appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--orange);background:#fff}
+.fg{margin-bottom:11px}.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.g3{display:grid;grid-template-columns:2fr 1fr 1.2fr;gap:8px}
+.btn{display:flex;align-items:center;justify-content:center;gap:5px;padding:12px 16px;border-radius:9px;border:none;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;width:100%}
+.btn-or{background:linear-gradient(135deg,#E67E22,#F39C12);color:#fff}
+.btn-nv{background:linear-gradient(135deg,#1A3C5E,#2563a8);color:#fff}
+.btn-gn{background:linear-gradient(135deg,#27AE60,#2ecc71);color:#fff}
+.btn-rd{background:#FEE2E2;color:var(--red);border:none}
+.btn-ol{background:transparent;color:var(--orange);border:2px solid var(--orange)}
+.btn-sm{padding:9px 12px;font-size:12px;width:auto}
+.bgrp{display:flex;gap:8px;margin-top:10px}
+/* Bill rows */
+.prow{border:1.5px solid var(--border);border-radius:10px;padding:11px;margin-bottom:9px;background:var(--inp)}
+.prow.has{border-color:#9ED8B4;background:#F5FDF8}
+.rn{background:var(--orange);color:#fff;width:20px;height:20px;border-radius:50%;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.prow-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.del-btn{background:#FEE2E2;color:var(--red);border:none;border-radius:7px;padding:4px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
+.pick-btn{width:100%;padding:10px 12px;border:1.5px dashed var(--border);border-radius:9px;background:#fff;font-family:inherit;font-size:13px;color:var(--muted);cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px}
+.pick-btn.has{border-style:solid;border-color:#9ED8B4;background:#F5FDF8;color:var(--navy);font-weight:700}
+.sbadge{display:inline-flex;gap:4px;background:#EAFAF1;color:var(--green);border-radius:7px;padding:4px 9px;font-size:12px;font-weight:700;margin-top:6px}
+.pthumb{width:32px;height:32px;border-radius:7px;object-fit:cover;border:1px solid var(--border);flex-shrink:0}
+.pthumb-ph{width:32px;height:32px;border-radius:7px;background:#EEF2F7;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+/* Totals */
+.totals{background:linear-gradient(135deg,#EBF5FB,#EAFAF5);border-radius:10px;padding:12px;border:1px solid #C8E6C9}
+.tr{display:flex;justify-content:space-between;padding:5px 0}.tr+.tr{border-top:1px dashed #C8E6C9}
+.tr .tl{font-size:12px;color:var(--muted)}.tr .tv{font-size:13px;font-weight:700}
+.tr.grand{border-top:2px solid var(--green)!important;padding-top:9px;margin-top:2px}
+.tr.grand .tl{font-size:14px;font-weight:800;color:var(--navy)}.tr.grand .tv{font-size:17px;font-weight:800;color:var(--green)}
+.pays{display:flex;flex-wrap:wrap;gap:7px}
+.pay{padding:7px 12px;border-radius:20px;border:1.5px solid var(--border);background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);font-family:inherit}
+.pay.on{border-color:var(--green);background:#EAFAF1;color:var(--green)}
+/* Stats */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.sc{background:#fff;border-radius:14px;padding:14px;border:1px solid var(--border)}
+.sc .si{font-size:20px;margin-bottom:3px}.sc .sl{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase}
+.sc .sv{font-size:16px;font-weight:800;color:var(--navy);margin-top:2px}
+.sc.gn .sv{color:var(--green)}.sc.or .sv{color:var(--orange)}
+/* Table */
+.mt{width:100%;border-collapse:collapse}
+.mt th{background:var(--navy);color:#fff;padding:8px 5px;font-size:10px;text-align:center}
+.mt th:first-child{border-radius:8px 0 0 0}.mt th:last-child{border-radius:0 8px 0 0}
+.mt td{padding:8px 5px;font-size:11px;text-align:center;border-bottom:1px solid #EEF2F7}
+.mt tr:nth-child(even) td{background:#F8FAFC}
+.mt tr:last-child td{font-weight:800;background:#EAFAF1;color:var(--green)}
+.btag{display:inline-block;background:var(--orange);color:#fff;border-radius:20px;padding:1px 7px;font-size:10px;font-weight:700}
+/* Bill list */
+.bi{background:#fff;border-radius:10px;padding:12px;margin-bottom:8px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.bi:active{background:#F8FAFC}
+.bi-no{font-weight:700;font-size:13px;color:var(--navy)}.bi-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.bi-amt{font-size:15px;font-weight:800;color:var(--green);text-align:right}.bi-dt{font-size:10px;color:var(--muted);text-align:right}
+/* Catalog */
+.ftabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.ft{padding:7px 13px;border-radius:20px;border:1.5px solid var(--border);background:#fff;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;font-family:inherit}
+.ft.on{background:var(--orange);color:#fff;border-color:var(--orange)}
+.catbar{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.pi{background:#fff;border-radius:12px;border:1.5px solid var(--border);overflow:hidden;margin-bottom:10px;box-shadow:0 1px 8px rgba(26,60,94,.06)}
+.pi-main{display:flex;align-items:center;gap:11px;padding:12px}
+.pi-img{width:58px;height:58px;border-radius:10px;background:#EEF2F7;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;position:relative}
+.pi-img img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.pi-img-btn{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.5);color:#fff;font-size:9px;font-weight:700;text-align:center;padding:2px;cursor:pointer;border-radius:0 0 10px 10px}
+.pi-info{flex:1;min-width:0}.pi-name{font-size:13px;font-weight:700;color:var(--navy)}
+.pi-sub{font-size:11px;color:var(--muted);margin-top:1px}.pi-price{font-size:14px;font-weight:800;color:var(--green);margin-top:3px}
+.pi-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.pi-badge{font-size:9px;font-weight:700;padding:3px 7px;border-radius:20px}
+.pb-b{background:#E3F2FD;color:#1565C0}.pb-g{background:#FCE4EC;color:#880E4F}
+.pi-edit-btn{border:none;border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;background:#F0F4F8;color:var(--navy)}
+.pi-edit-btn.on{background:#FFF3E8;color:var(--orange)}
+.pi-ep{border-top:1px solid var(--border);background:#F8FAFC;padding:14px;display:none}
+/* Add form */
+.add-form{background:#fff;border-radius:14px;border:2px solid var(--orange);padding:14px;margin-bottom:12px;display:none}
+.add-form.on{display:block}
+.afh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.afh h3{font-size:14px;font-weight:800;color:var(--navy)}
+.xbtn{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;padding:0}
+.img-area{border:2px dashed var(--border);border-radius:9px;text-align:center;background:var(--inp);padding:14px;position:relative}
+.img-area input[type=file]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.img-area img.prev{max-height:100px;border-radius:8px;display:none;margin:0 auto}
+/* Backup banner */
+.backup-box{background:linear-gradient(135deg,#1A3C5E,#1e6bab);border-radius:14px;padding:16px;margin-bottom:12px;color:#fff}
+.backup-box h3{font-size:14px;font-weight:800;margin-bottom:4px}
+.backup-box p{font-size:11px;opacity:.8;margin-bottom:12px;line-height:1.5}
+.backup-btns{display:flex;gap:8px}
+.bb{flex:1;padding:10px;border:none;border-radius:9px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.bb-export{background:#fff;color:var(--navy)}
+.bb-import{background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4)}
+.bb-import input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.bb-import-wrap{flex:1;position:relative}
+/* Edit items in bill */
+.eb-item{display:flex;gap:8px;align-items:center;padding:8px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:7px}
+.eb-item-name{font-size:12px;font-weight:600;color:var(--navy);flex:1;min-width:0}
+.eb-item-sub{font-size:11px;color:var(--muted)}
+.eb-item-inputs{display:flex;gap:6px;align-items:center}
+.eb-item-inputs input{width:70px;padding:7px 8px;font-size:13px;text-align:center}
+/* Modal */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end}
+.ov.on{display:flex}
+.sh{background:#fff;width:100%;border-radius:20px 20px 0 0;padding:16px 14px 36px;max-height:90vh;overflow-y:auto}
+.sh-hdl{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 13px}
+.sh-t{font-size:15px;font-weight:800;color:var(--navy);text-align:center;margin-bottom:12px}
+/* Disc */
+.dr{display:flex;gap:8px;align-items:center}.dr input{flex:1}
+.dv{background:#FEE2E2;color:var(--red);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;white-space:nowrap}
+/* Toast */
+.toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--navy);color:#fff;padding:10px 18px;border-radius:30px;font-size:12px;font-weight:700;opacity:0;transition:.3s;z-index:500;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start">
+    <div><h1>🛍️ Quản Lý Bán Hàng</h1><p>Bình Giữ Nhiệt &amp; Gấu Bông</p></div>
+    <div id="syncBadge" style="font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;background:#D1FAE5;color:#065F46;white-space:nowrap;margin-top:2px;transition:.3s">☁️ Đã lưu cloud</div>
+  </div>
+</div>
+<div class="tabs">
+  <button class="on" id="tb-bill" onclick="goTab('bill')">📄 Tạo Bill</button>
+  <button id="tb-revenue" onclick="goTab('revenue')">📊 Doanh Thu</button>
+  <button id="tb-catalog" onclick="goTab('catalog')">🛒 Sản Phẩm</button>
+</div>
+
+<!-- TAB BILL -->
+<div id="tab-bill" class="pane on">
+  <div class="card">
+    <div class="ch"><div class="ico">📋</div><h2>Khách Hàng</h2></div>
+    <div class="cb">
+      <div class="g2">
+        <div class="fg"><label class="lbl">Số Bill</label><input id="billno" readonly style="font-weight:800;color:var(--orange);background:#FFF8F2"></div>
+        <div class="fg"><label class="lbl">Ngày Bán</label><input type="date" id="billdate"></div>
+      </div>
+      <div class="fg"><label class="lbl">Tên Khách Hàng *</label><input type="text" id="custname" placeholder="Nhập tên khách hàng..."></div>
+      <div class="g2">
+        <div class="fg"><label class="lbl">Số Điện Thoại</label><input type="tel" id="custphone" placeholder="0xxx..."></div>
+        <div class="fg"><label class="lbl">Tháng</label>
+          <select id="billmonth">
+            <option>Tháng 1</option><option>Tháng 2</option><option>Tháng 3</option><option>Tháng 4</option>
+            <option>Tháng 5</option><option>Tháng 6</option><option>Tháng 7</option><option>Tháng 8</option>
+            <option>Tháng 9</option><option>Tháng 10</option><option>Tháng 11</option><option>Tháng 12</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="ico">🛒</div><h2>Sản Phẩm</h2><button class="ch-btn" onclick="addRow()">+ Thêm dòng</button></div>
+    <div class="cb" id="rowlist"></div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="ico">💰</div><h2>Thanh Toán</h2></div>
+    <div class="cb">
+      <div class="fg"><label class="lbl">Chiết Khấu (%)</label>
+        <div class="dr"><input type="number" id="disc" value="0" min="0" max="100" oninput="calcT()"><div class="dv" id="dv">- 0 ₫</div></div>
+      </div>
+      <div class="fg"><label class="lbl">Phí Vận Chuyển (₫)</label><input type="number" id="ship" value="0" min="0" oninput="calcT()"></div>
+      <div class="totals" style="margin-bottom:12px">
+        <div class="tr"><span class="tl">Tạm tính</span><span class="tv" id="tsub">0 ₫</span></div>
+        <div class="tr"><span class="tl">Chiết khấu</span><span class="tv" style="color:var(--red)" id="tdisc">- 0 ₫</span></div>
+        <div class="tr"><span class="tl">Phí ship</span><span class="tv" id="tship">0 ₫</span></div>
+        <div class="tr grand"><span class="tl">💰 TỔNG THANH TOÁN</span><span class="tv" id="ttotal">0 ₫</span></div>
+      </div>
+      <div class="fg"><label class="lbl">Thanh Toán</label>
+        <div class="pays">
+          <button class="pay on" onclick="setPay(this)">💵 Tiền mặt</button>
+          <button class="pay" onclick="setPay(this)">🏦 CK ngân hàng</button>
+          <button class="pay" onclick="setPay(this)">💳 Thẻ</button>
+          <button class="pay" onclick="setPay(this)">📱 Ví điện tử</button>
+        </div>
+      </div>
+      <div class="fg" style="margin-top:9px"><label class="lbl">Ghi Chú</label><textarea id="billnote" rows="2" placeholder="Ghi chú..."></textarea></div>
+      <div class="bgrp">
+        <button class="btn btn-gn" style="flex:2" onclick="saveBill()">💾 Lưu Bill</button>
+        <button class="btn btn-nv btn-sm" onclick="doPrint()">🖨️</button>
+        <button class="btn btn-rd btn-sm" onclick="resetBill()">🗑️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB REVENUE -->
+<div id="tab-revenue" class="pane">
+  <!-- BACKUP BOX -->
+  <!-- Cloud sync status card -->
+  <div style="background:linear-gradient(135deg,#1A3C5E,#1e6bab);border-radius:14px;padding:16px;margin-bottom:12px;color:#fff">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div style="font-size:28px">☁️</div>
+      <div>
+        <div style="font-size:14px;font-weight:800">Tự Động Lưu Cloud</div>
+        <div style="font-size:11px;opacity:.75;margin-top:2px">Dữ liệu được lưu tự động sau mỗi thao tác</div>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,.15);border-radius:9px;padding:10px;font-size:12px;line-height:1.6;opacity:.9">
+      ✅ Vào lại link bất kỳ lúc nào vẫn còn nguyên dữ liệu<br>
+      ✅ Không cần xuất/nhập file thủ công<br>
+      ✅ Tự động sync sau mỗi bill, sản phẩm
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px">
+      <button onclick="exportData()" style="flex:1;padding:9px;background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:9px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">📤 Xuất dự phòng</button>
+      <button onclick="showImportOv()" style="flex:1;padding:9px;background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.4);border-radius:9px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer">📥 Nhập backup</button>
+    </div>
+  </div>
+  <div class="sg">
+    <div class="sc gn"><div class="si">💰</div><div class="sl">Tổng Năm</div><div class="sv" id="s1">0 ₫</div></div>
+    <div class="sc or"><div class="si">📋</div><div class="sl">Tổng Bill</div><div class="sv" id="s2">0</div></div>
+    <div class="sc"><div class="si">🏆</div><div class="sl">Tháng Đỉnh</div><div class="sv" id="s3" style="font-size:13px">—</div></div>
+    <div class="sc"><div class="si">📈</div><div class="sl">TB / Bill</div><div class="sv" id="s4" style="font-size:13px">0 ₫</div></div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="ico">🎯</div><h2>KPI Tháng (₫)</h2></div>
+    <div class="cb"><input type="number" id="kpi" value="50000000" oninput="renderRev()"></div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="ico">📊</div><h2>Doanh Thu Theo Tháng</h2></div>
+    <div class="cb" style="overflow-x:auto"><table class="mt"><thead><tr><th>Tháng</th><th>Bill</th><th>Doanh Thu</th><th>% KPI</th></tr></thead><tbody id="mtb"></tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="ico">🧾</div><h2>Lịch Sử Bill</h2><button class="ch-btn" onclick="clearBills()">Xóa tất cả</button></div>
+    <div class="cb" id="bhist"><p style="color:var(--muted);text-align:center;padding:18px 0;font-size:13px">Chưa có bill nào</p></div>
+  </div>
+</div>
+
+<!-- TAB CATALOG -->
+<div id="tab-catalog" class="pane">
+  <div class="add-form" id="addform">
+    <div class="afh"><h3>➕ Thêm Sản Phẩm</h3><button class="xbtn" onclick="toggleAdd()">✕</button></div>
+    <div class="fg"><label class="lbl">Loại</label>
+      <select id="ntype"><option value="binh">🧊 Bình Giữ Nhiệt</option><option value="gau">🧸 Gấu Bông</option></select>
+    </div>
+    <div class="g2">
+      <div class="fg"><label class="lbl">Tên Sản Phẩm</label><input type="text" id="nname" placeholder="Bình Stanley..."></div>
+      <div class="fg"><label class="lbl">Màu / Mẫu Mã</label><input type="text" id="ncolor" placeholder="Đen Matte..."></div>
+    </div>
+    <div class="g2">
+      <div class="fg"><label class="lbl">Đơn Giá (₫)</label><input type="number" id="nprice" placeholder="850000" inputmode="numeric"></div>
+      <div class="fg"><label class="lbl">Ghi Chú</label><input type="text" id="nnote" placeholder="500ml..."></div>
+    </div>
+    <div class="fg"><label class="lbl">Hình Ảnh</label>
+      <div class="img-area">
+        <input type="file" accept="image/*" id="nimg" onchange="previewNew(this)">
+        <img class="prev" id="nprev">
+        <div id="nph" style="font-size:13px;color:var(--muted)">📷 Nhấn để chọn ảnh</div>
+      </div>
+    </div>
+    <button class="btn btn-or" onclick="saveNew()">💾 Thêm Sản Phẩm</button>
+  </div>
+  <div class="catbar">
+    <div class="ftabs" id="ftabs">
+      <button class="ft on" onclick="fcat('all',this)">Tất cả</button>
+      <button class="ft" onclick="fcat('binh',this)">🧊 Bình</button>
+      <button class="ft" onclick="fcat('gau',this)">🧸 Gấu</button>
+    </div>
+    <button class="btn btn-or btn-sm" onclick="toggleAdd()">+ Thêm SP</button>
+  </div>
+  <div id="catlist"></div>
+</div>
+
+<!-- MODAL: Chọn SP -->
+<div class="ov" id="pickModal" style="z-index:400" onclick="if(event.target.id==='pickModal')closePickModal()">
+  <div class="sh">
+    <div class="sh-hdl"></div>
+    <div class="sh-t">🛒 Chọn Sản Phẩm</div>
+    <div class="ftabs" id="pft" style="margin-bottom:11px">
+      <button class="ft on" onclick="pfilt('all',this)">Tất cả</button>
+      <button class="ft" onclick="pfilt('binh',this)">🧊 Bình</button>
+      <button class="ft" onclick="pfilt('gau',this)">🧸 Gấu</button>
+    </div>
+    <div id="plist"></div>
+  </div>
+</div>
+
+<!-- MODAL: Chi tiết bill (xem + sửa) -->
+<div class="ov" id="billModal" onclick="if(event.target===this)this.classList.remove('on')">
+  <div class="sh" style="max-height:92vh">
+    <div class="sh-hdl"></div>
+    <div id="bm-view">
+      <!-- View mode -->
+      <div class="sh-t" id="bmt"></div>
+      <div id="bmb"></div>
+      <div class="bgrp" style="margin-top:14px">
+        <button class="btn btn-or" style="flex:2" onclick="switchToEdit()">✏️ Sửa Bill Này</button>
+        <button class="btn btn-rd btn-sm" onclick="deleteEditBill()">🗑️</button>
+      </div>
+    </div>
+    <div id="bm-edit" style="display:none">
+      <!-- Edit mode -->
+      <div class="sh-t">✏️ Sửa Bill</div>
+      <div class="g2">
+        <div class="fg"><label class="lbl">Số Bill</label><input id="eb-no" readonly style="background:#f5f7fa;font-weight:800;color:var(--orange)"></div>
+        <div class="fg"><label class="lbl">Ngày Bán</label><input type="date" id="eb-date"></div>
+      </div>
+      <div class="fg"><label class="lbl">Tên Khách Hàng</label><input type="text" id="eb-name"></div>
+      <div class="g2">
+        <div class="fg"><label class="lbl">Số Điện Thoại</label><input type="tel" id="eb-phone"></div>
+        <div class="fg"><label class="lbl">Tháng</label>
+          <select id="eb-month">
+            <option>Tháng 1</option><option>Tháng 2</option><option>Tháng 3</option><option>Tháng 4</option>
+            <option>Tháng 5</option><option>Tháng 6</option><option>Tháng 7</option><option>Tháng 8</option>
+            <option>Tháng 9</option><option>Tháng 10</option><option>Tháng 11</option><option>Tháng 12</option>
+          </select>
+        </div>
+      </div>
+      <label class="lbl" style="margin-bottom:8px;display:block">Sản Phẩm</label>
+      <div id="eb-items"></div>
+      <div class="g2">
+        <div class="fg"><label class="lbl">Chiết Khấu (%)</label><input type="number" id="eb-disc" value="0" min="0" max="100" oninput="calcEB()"></div>
+        <div class="fg"><label class="lbl">Phí Ship (₫)</label><input type="number" id="eb-ship" value="0" oninput="calcEB()"></div>
+      </div>
+      <div class="totals" style="margin-bottom:11px">
+        <div class="tr grand"><span class="tl">💰 TỔNG THANH TOÁN</span><span class="tv" id="eb-total">0 ₫</span></div>
+      </div>
+      <div class="fg"><label class="lbl">Ghi Chú</label><textarea id="eb-note" rows="2"></textarea></div>
+      <div class="fg"><label class="lbl">Thanh Toán</label>
+        <div class="pays" id="eb-pays">
+          <button class="pay" onclick="setEBPay(this)">💵 Tiền mặt</button>
+          <button class="pay" onclick="setEBPay(this)">🏦 CK ngân hàng</button>
+          <button class="pay" onclick="setEBPay(this)">💳 Thẻ</button>
+          <button class="pay" onclick="setEBPay(this)">📱 Ví điện tử</button>
+        </div>
+      </div>
+      <div class="bgrp">
+        <button class="btn btn-gn" style="flex:2" onclick="saveEditBill()">💾 Lưu Thay Đổi</button>
+        <button class="btn btn-ol btn-sm" onclick="switchToView()">← Quay lại</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var DEFAULTS=[
+  {id:'B001',type:'binh',name:'Binh Stanley Classic',color:'Den Matte',price:850000,note:'500ml 24h lanh',img:'🍶',imgData:null},
+  {id:'B002',type:'binh',name:'Binh Stanley Classic',color:'Xanh Navy',price:850000,note:'500ml 24h lanh',img:'🍶',imgData:null},
+  {id:'B003',type:'binh',name:'Binh Stanley Classic',color:'Do Cherry',price:850000,note:'500ml 24h lanh',img:'🍶',imgData:null},
+  {id:'B004',type:'binh',name:'Binh Thermos King',color:'Trang Bach Tuyet',price:650000,note:'470ml 18h lanh',img:'🧊',imgData:null},
+  {id:'B005',type:'binh',name:'Binh Thermos King',color:'Hong Pastel',price:650000,note:'470ml 18h lanh',img:'🧊',imgData:null},
+  {id:'B006',type:'binh',name:'Binh Thermos King',color:'Xanh Mint',price:650000,note:'470ml 18h lanh',img:'🧊',imgData:null},
+  {id:'B007',type:'binh',name:'Binh Lock Lock',color:'Vang Gold',price:420000,note:'400ml 12h lanh',img:'✨',imgData:null},
+  {id:'B008',type:'binh',name:'Binh Lock Lock',color:'Xanh Turquoise',price:420000,note:'400ml 12h lanh',img:'✨',imgData:null},
+  {id:'B009',type:'binh',name:'Binh Lock Lock',color:'Tim Lavender',price:420000,note:'400ml 12h lanh',img:'✨',imgData:null},
+  {id:'B010',type:'binh',name:'Binh Premium Cao Cap',color:'Bac Chrome',price:1200000,note:'600ml 30h lanh',img:'💎',imgData:null},
+  {id:'B011',type:'binh',name:'Binh Premium Cao Cap',color:'Den Rose Gold',price:1200000,note:'600ml 30h lanh',img:'💎',imgData:null},
+  {id:'B012',type:'binh',name:'Binh Mini 350ml',color:'Hong Baby',price:280000,note:'350ml 10h lanh',img:'🌸',imgData:null},
+  {id:'B013',type:'binh',name:'Binh Mini 350ml',color:'Xanh Pastel',price:280000,note:'350ml 10h lanh',img:'🌸',imgData:null},
+  {id:'G001',type:'gau',name:'Gau Bong Teddy Classic',color:'Nau',price:320000,note:'Size 40cm',img:'🧸',imgData:null},
+  {id:'G002',type:'gau',name:'Gau Bong Teddy Classic',color:'Kem',price:320000,note:'Size 40cm',img:'🧸',imgData:null},
+  {id:'G003',type:'gau',name:'Gau Bong Panda',color:'Den Trang',price:280000,note:'Size 35cm',img:'🐼',imgData:null},
+  {id:'G004',type:'gau',name:'Gau Bong Hello Kitty',color:'Hong',price:350000,note:'Size 30cm',img:'🎀',imgData:null},
+  {id:'G005',type:'gau',name:'Gau Bong Miniso',color:'Xanh Pastel',price:250000,note:'Size 25cm',img:'💙',imgData:null},
+  {id:'G006',type:'gau',name:'Gau Bong Khong Lo 1m',color:'Kem',price:1500000,note:'Size 100cm',img:'🤍',imgData:null},
+  {id:'G007',type:'gau',name:'Gau Bong Goi Om',color:'Xam',price:450000,note:'Size 50cm',img:'🩶',imgData:null}
+];
+
+// Load Vietnamese names from stored data or defaults
+var VNAMES={
+  'B001':'Bình Stanley Classic','B002':'Bình Stanley Classic','B003':'Bình Stanley Classic',
+  'B004':'Bình Thermos King','B005':'Bình Thermos King','B006':'Bình Thermos King',
+  'B007':'Bình Lock Lock','B008':'Bình Lock Lock','B009':'Bình Lock Lock',
+  'B010':'Bình Premium Cao Cấp','B011':'Bình Premium Cao Cấp',
+  'B012':'Bình Mini 350ml','B013':'Bình Mini 350ml',
+  'G001':'Gấu Bông Teddy Classic','G002':'Gấu Bông Teddy Classic','G003':'Gấu Bông Panda',
+  'G004':'Gấu Bông Hello Kitty','G005':'Gấu Bông Miniso','G006':'Gấu Bông Khổng Lồ 1m','G007':'Gấu Bông Gối Ôm'
+};
+var VCOLORS={
+  'B001':'Đen Matte','B002':'Xanh Navy','B003':'Đỏ Cherry',
+  'B004':'Trắng Bạch Tuyết','B005':'Hồng Pastel','B006':'Xanh Mint',
+  'B007':'Vàng Gold','B008':'Xanh Turquoise','B009':'Tím Lavender',
+  'B010':'Bạc Chrome','B011':'Đen Rose Gold','B012':'Hồng Baby','B013':'Xanh Pastel',
+  'G001':'Nâu','G002':'Kem','G003':'Đen Trắng','G004':'Hồng','G005':'Xanh Pastel',
+  'G006':'Kem','G007':'Xám'
+};
+var VNOTES={
+  'B001':'500ml · 24h lạnh','B002':'500ml · 24h lạnh','B003':'500ml · 24h lạnh',
+  'B004':'470ml · 18h lạnh','B005':'470ml · 18h lạnh','B006':'470ml · 18h lạnh',
+  'B007':'400ml · 12h lạnh','B008':'400ml · 12h lạnh','B009':'400ml · 12h lạnh',
+  'B010':'600ml · 30h lạnh','B011':'600ml · 30h lạnh','B012':'350ml · 10h lạnh','B013':'350ml · 10h lạnh',
+  'G001':'Size 40cm','G002':'Size 40cm','G003':'Size 35cm','G004':'Size 30cm',
+  'G005':'Size 25cm','G006':'Size 100cm','G007':'Size 50cm'
+};
+
+var prods, bills, bCnt, rows, pickRow, pf, cf, pay, addImg, curBillIdx;
+
+// ── Cloud storage (window.storage) with localStorage fallback ──
+var STORE_KEY='banhang_data_v1';
+var _saveTimer=null;
+
+function setSyncStatus(state){
+  // state: 'saving' | 'saved' | 'error' | 'loading'
+  var el=document.getElementById('syncBadge');
+  if(!el)return;
+  var map={saving:{txt:'⏳ Đang lưu…',bg:'#FFF3CD',col:'#856404'},
+            saved:{txt:'☁️ Đã lưu cloud',bg:'#D1FAE5',col:'#065F46'},
+            error:{txt:'💾 Lưu local',bg:'#FEE2E2',col:'#991B1B'},
+            loading:{txt:'⏳ Đang tải…',bg:'#EBF5FB',col:'#1A3C5E'}};
+  var s=map[state]||map.saved;
+  el.textContent=s.txt; el.style.background=s.bg; el.style.color=s.col;
+}
+
+function loadFromCloud(cb){
+  setSyncStatus('loading');
+  if(window.storage){
+    window.storage.get(STORE_KEY).then(function(r){
+      if(r&&r.value){
+        try{
+          var d=JSON.parse(r.value);
+          if(d.prods) prods=d.prods;
+          if(d.bills) bills=d.bills;
+          if(d.bCnt)  bCnt=d.bCnt;
+          setSyncStatus('saved');
+        }catch(e){ loadFromLocal(); }
+      } else { loadFromLocal(); }
+      cb();
+    }).catch(function(){ loadFromLocal(); cb(); });
+  } else { loadFromLocal(); cb(); }
+}
+
+function loadFromLocal(){
+  try{ prods=JSON.parse(localStorage.getItem('p4'))||null; }catch(e){prods=null;}
+  if(!prods){
+    prods=DEFAULTS.map(function(d){
+      var p=JSON.parse(JSON.stringify(d));
+      if(VNAMES[p.id]) p.name=VNAMES[p.id];
+      if(VCOLORS[p.id]) p.color=VCOLORS[p.id];
+      if(VNOTES[p.id]) p.note=VNOTES[p.id];
+      return p;
+    });
+  }
+  try{ bills=JSON.parse(localStorage.getItem('b4'))||[]; }catch(e){bills=[];}
+  try{ bCnt=parseInt(localStorage.getItem('c4'))||1; }catch(e){bCnt=1;}
+}
+
+function init(){
+  rows=[]; pickRow=null; pf='all'; cf='all'; pay='Tiền mặt'; addImg=null; curBillIdx=-1;
+  prods=[]; bills=[]; bCnt=1;
+  var t=new Date();
+  document.getElementById('billdate').value=t.toISOString().split('T')[0];
+  document.getElementById('billmonth').selectedIndex=t.getMonth();
+  loadFromCloud(function(){
+    updNo(); addRow(); renderCat(); renderRev();
+  });
+}
+
+function sv(){
+  // Always save to localStorage immediately
+  try{
+    localStorage.setItem('p4',JSON.stringify(prods));
+    localStorage.setItem('b4',JSON.stringify(bills));
+    localStorage.setItem('c4',String(bCnt));
+  }catch(e){}
+  // Debounce cloud save (avoid too many writes)
+  setSyncStatus('saving');
+  clearTimeout(_saveTimer);
+  _saveTimer=setTimeout(function(){
+    if(window.storage){
+      var data=JSON.stringify({prods:prods,bills:bills,bCnt:bCnt});
+      window.storage.set(STORE_KEY,data).then(function(r){
+        setSyncStatus(r?'saved':'error');
+      }).catch(function(){ setSyncStatus('error'); });
+    } else { setSyncStatus('error'); }
+  },800);
+}
+
+// TABS
+function goTab(id){
+  ['bill','revenue','catalog'].forEach(function(t){
+    document.getElementById('tab-'+t).classList.toggle('on',t===id);
+    document.getElementById('tb-'+t).classList.toggle('on',t===id);
+  });
+  if(id==='revenue') renderRev();
+  if(id==='catalog') renderCat();
+}
+
+// BILL ROWS
+function addRow(){
+  rows.push({id:Date.now(),prod:null,qty:1,price:0});
+  renderRows();
+}
+function renderRows(){
+  var el=document.getElementById('rowlist'); el.innerHTML='';
+  rows.forEach(function(r,i){
+    var d=document.createElement('div');
+    d.className='prow'+(r.prod?' has':''); d.id='row'+r.id;
+    var top=document.createElement('div'); top.className='prow-top';
+    var rn=document.createElement('div'); rn.className='rn'; rn.textContent=i+1;
+    var rt=document.createElement('div'); rt.style.cssText='display:flex;align-items:center;gap:6px';
+    if(r.prod){var ok=document.createElement('span');ok.style.cssText='font-size:11px;color:var(--green);font-weight:700';ok.textContent='✓';rt.appendChild(ok);}
+    if(rows.length>1){var db=document.createElement('button');db.className='del-btn';db.textContent='✕ Xóa';db.onclick=(function(rid){return function(){rows=rows.filter(function(x){return x.id!==rid;});renderRows();};})(r.id);rt.appendChild(db);}
+    top.appendChild(rn);top.appendChild(rt);d.appendChild(top);
+    var pb=document.createElement('button');pb.className='pick-btn'+(r.prod?' has':'');pb.style.marginBottom='8px';
+    var th;
+    if(r.prod&&r.prod.imgData){th=document.createElement('img');th.src=r.prod.imgData;th.className='pthumb';}
+    else{th=document.createElement('div');th.className='pthumb-ph';th.textContent=r.prod?r.prod.img||'🎁':'🎁';}
+    var pt=document.createElement('span');pt.textContent=r.prod?(r.prod.name+' · '+r.prod.color):'👆 Nhấn để chọn sản phẩm';
+    pb.appendChild(th);pb.appendChild(pt);
+    pb.onclick=(function(rid){return function(){openPick(rid);};})(r.id);
+    d.appendChild(pb);
+    var g=document.createElement('div');g.className='g3';
+    var loai=document.createElement('div');
+    var l1=document.createElement('label');l1.className='lbl';l1.textContent='Loại';
+    var li=document.createElement('input');li.readOnly=true;li.value=r.prod?(r.prod.type==='binh'?'Bình Giữ Nhiệt':'Gấu Bông'):'';li.style.cssText='background:#f5f7fa;font-size:12px;padding:9px 8px';
+    loai.appendChild(l1);loai.appendChild(li);
+    var qty=document.createElement('div');
+    var l2=document.createElement('label');l2.className='lbl';l2.textContent='Số Lượng';
+    var qi=document.createElement('input');qi.type='number';qi.min='1';qi.style.cssText='text-align:center;font-weight:700';qi.value=r.qty;
+    qi.oninput=(function(rid){return function(){var row=rows.find(function(x){return x.id===rid;});if(row){row.qty=Math.max(1,parseInt(this.value)||1);}calcT();updBadge(rid);};})(r.id);
+    qty.appendChild(l2);qty.appendChild(qi);
+    var prc=document.createElement('div');
+    var l3=document.createElement('label');l3.className='lbl';l3.textContent='Đơn Giá';
+    var pi2=document.createElement('input');pi2.type='number';pi2.inputMode='numeric';pi2.style.cssText='font-size:12px;padding:9px 7px';pi2.value=r.price;
+    pi2.oninput=(function(rid){return function(){var row=rows.find(function(x){return x.id===rid;});if(row){row.price=parseInt(this.value)||0;}calcT();updBadge(rid);};})(r.id);
+    prc.appendChild(l3);prc.appendChild(pi2);
+    g.appendChild(loai);g.appendChild(qty);g.appendChild(prc);d.appendChild(g);
+    if(r.price>0){var badge=document.createElement('div');badge.className='sbadge';badge.id='badge'+r.id;badge.textContent='💰 '+fmt(r.qty*r.price);d.appendChild(badge);}
+    el.appendChild(d);
+  });
+  calcT();
+}
+function updBadge(rid){var r=rows.find(function(x){return x.id===rid;});if(!r)return;var el=document.getElementById('badge'+rid);if(el)el.textContent='💰 '+fmt(r.qty*r.price);}
+
+// PICK MODAL
+function openPick(rid){pickRow=rid;renderPick(pf);document.getElementById('pickModal').classList.add('on');}
+function closePickModal(){document.getElementById('pickModal').classList.remove('on');}
+function pfilt(f,el){pf=f;document.querySelectorAll('#pft .ft').forEach(function(t){t.classList.remove('on');});el.classList.add('on');renderPick(f);}
+function renderPick(f){
+  var list=f==='all'?prods:prods.filter(function(p){return p.type===f;});
+  var el=document.getElementById('plist');el.innerHTML='';
+  list.forEach(function(p){
+    var d=document.createElement('div');d.style.cssText='display:flex;gap:11px;align-items:center;padding:11px 10px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:8px;background:#fff;cursor:pointer';
+    d.onclick=function(){pickProd(p.id);};
+    var imgEl;
+    if(p.imgData){imgEl=document.createElement('img');imgEl.src=p.imgData;imgEl.style.cssText='width:46px;height:46px;object-fit:cover;border-radius:8px;flex-shrink:0';}
+    else{imgEl=document.createElement('div');imgEl.style.cssText='width:46px;height:46px;border-radius:8px;background:#EEF2F7;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0';imgEl.textContent=p.img||'🎁';}
+    var info=document.createElement('div');info.style.flex='1';
+    var n=document.createElement('div');n.style.cssText='font-size:13px;font-weight:700;color:var(--navy)';n.textContent=p.name;
+    var s=document.createElement('div');s.style.cssText='font-size:11px;color:var(--muted);margin-top:2px';s.textContent='🎨 '+p.color+(p.note?' · '+p.note:'');
+    var pr=document.createElement('div');pr.style.cssText='font-size:15px;font-weight:800;color:var(--green);margin-top:3px';pr.textContent=fmt(p.price);
+    info.appendChild(n);info.appendChild(s);info.appendChild(pr);
+    var arr=document.createElement('div');arr.style.cssText='color:var(--muted);font-size:22px';arr.textContent='›';
+    d.appendChild(imgEl);d.appendChild(info);d.appendChild(arr);el.appendChild(d);
+  });
+  if(!list.length){var p2=document.createElement('p');p2.style.cssText='color:var(--muted);text-align:center;padding:20px 0;font-size:13px';p2.textContent='Không có sản phẩm';el.appendChild(p2);}
+}
+function pickProd(pid){
+  var p=prods.find(function(x){return x.id===pid;});
+  if(!p)return;
+  var pm=document.getElementById('pickModal');
+  pm.classList.remove('on');
+  pm.style.display='';
+  if(pickRow==='EDIT'){
+    ebItems.push({prodId:p.id,name:p.name+' · '+p.color,qty:1,price:p.price,sub:p.price,img:p.img||'🎁',imgData:p.imgData||null});
+    renderEbItems();calcEB();
+    toast('✅ Đã thêm: '+p.name);
+  } else {
+    var r=rows.find(function(x){return x.id===pickRow;});
+    if(r){r.prod=p;r.price=p.price;renderRows();}
+  }
+}
+
+// TOTALS
+function calcT(){
+  var sub=rows.reduce(function(s,r){return s+r.qty*r.price;},0);
+  var dp=parseFloat(document.getElementById('disc').value)||0;
+  var sh=parseInt(document.getElementById('ship').value)||0;
+  var da=Math.round(sub*dp/100),tot=sub-da+sh;
+  document.getElementById('tsub').textContent=fmt(sub);
+  document.getElementById('tdisc').textContent='- '+fmt(da);
+  document.getElementById('dv').textContent='- '+fmt(da);
+  document.getElementById('tship').textContent=fmt(sh);
+  document.getElementById('ttotal').textContent=fmt(tot);
+}
+function fmt(n){return (n||0).toLocaleString('vi-VN')+' ₫';}
+function setPay(el){document.querySelectorAll('.pay').forEach(function(x){x.classList.remove('on');});el.classList.add('on');pay=el.textContent.trim();}
+
+// SAVE BILL
+function saveBill(){
+  var name=document.getElementById('custname').value.trim();
+  if(!name){toast('⚠️ Nhập tên khách hàng!');return;}
+  if(rows.every(function(r){return r.price===0;})){toast('⚠️ Chưa có sản phẩm!');return;}
+  var sub=rows.reduce(function(s,r){return s+r.qty*r.price;},0);
+  var dp=parseFloat(document.getElementById('disc').value)||0;
+  var sh=parseInt(document.getElementById('ship').value)||0;
+  var da=Math.round(sub*dp/100),tot=sub-da+sh;
+  var bill={
+    no:document.getElementById('billno').value,
+    date:document.getElementById('billdate').value,
+    month:document.getElementById('billmonth').value,
+    customer:name,phone:document.getElementById('custphone').value,
+    items:rows.map(function(r){return{prodId:r.prod?r.prod.id:null,name:r.prod?r.prod.name+' · '+r.prod.color:'(chua chon)',qty:r.qty,price:r.price,sub:r.qty*r.price,img:r.prod?r.prod.img||'🎁':'🎁',imgData:r.prod?r.prod.imgData||null:null};}),
+    sub:sub,dp:dp,da:da,sh:sh,tot:tot,pay:pay,
+    note:document.getElementById('billnote').value,at:new Date().toISOString()
+  };
+  bills.unshift(bill);bCnt++;sv();updNo();
+  toast('✅ Đã lưu '+bill.no+' · '+fmt(tot));
+  resetBill();
+}
+function resetBill(){
+  rows=[];addRow();
+  ['custname','custphone','billnote'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('disc').value='0';document.getElementById('ship').value='0';calcT();
+}
+function updNo(){document.getElementById('billno').value='HD-'+String(bCnt).padStart(3,'0');}
+
+// PRINT (in bill hiện tại đang tạo)
+function doPrint(){
+  var name=document.getElementById('custname').value||'Khach hang';
+  var date=document.getElementById('billdate').value;
+  var no=document.getElementById('billno').value;
+  var sub=rows.reduce(function(s,r){return s+r.qty*r.price;},0);
+  var dp=parseFloat(document.getElementById('disc').value)||0;
+  var sh=parseInt(document.getElementById('ship').value)||0;
+  var da=Math.round(sub*dp/100),tot=sub-da+sh;
+  buildShareOverlay({
+    no:no,date:date,customer:name,phone:document.getElementById('custphone').value||'',
+    pay:pay,note:document.getElementById('billnote').value,
+    sub:sub,dp:dp,da:da,sh:sh,tot:tot,
+    items:rows.filter(function(r){return r.price>0;}).map(function(r){return{
+      name:r.prod?r.prod.name+' · '+r.prod.color:'San pham',
+      qty:r.qty,price:r.price,sub:r.qty*r.price,
+      img:r.prod?r.prod.img||'🎁':'🎁',imgData:r.prod?r.prod.imgData||null:null
+    };})
+  });
+}
+
+// REVENUE
+function renderRev(){
+  var kpi=parseInt(document.getElementById('kpi').value)||50000000;
+  var ms=['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+  var md=ms.map(function(m){var bs=bills.filter(function(b){return b.month===m;});return{m:m,cnt:bs.length,rev:bs.reduce(function(s,b){return s+b.tot;},0)};});
+  var yr=md.reduce(function(s,m){return s+m.rev;},0),nb=bills.length;
+  var best=md.reduce(function(b,m){return m.rev>b.rev?m:b;},md[0]);
+  document.getElementById('s1').textContent=yr>=1e6?(yr/1e6).toFixed(1)+'M ₫':fmt(yr);
+  document.getElementById('s2').textContent=nb;
+  document.getElementById('s3').textContent=best.rev>0?best.m:'—';
+  document.getElementById('s4').textContent=nb>0?fmt(Math.round(yr/nb)):'0 ₫';
+  var gr=0,gb=0,rows2='';
+  md.forEach(function(m){
+    gr+=m.rev;gb+=m.cnt;
+    var pct=kpi>0?Math.round(m.rev/kpi*100):0;
+    var pc=pct>=100?'var(--green)':pct>=70?'var(--orange)':'var(--red)';
+    rows2+='<tr><td style="font-weight:600;color:var(--navy)">'+m.m+'</td><td>'+(m.cnt>0?'<span class="btag">'+m.cnt+'</span>':'—')+'</td><td style="font-weight:700;font-size:11px">'+(m.rev>0?fmt(m.rev):'—')+'</td><td style="font-weight:800;color:'+pc+'">'+(m.rev>0?pct+'%':'—')+'</td></tr>';
+  });
+  rows2+='<tr><td>Cả Năm</td><td>'+gb+'</td><td>'+fmt(gr)+'</td><td>—</td></tr>';
+  document.getElementById('mtb').innerHTML=rows2;
+  var bh=document.getElementById('bhist');
+  if(!bills.length){bh.innerHTML='<p style="color:var(--muted);text-align:center;padding:18px 0;font-size:13px">Chưa có bill nào</p>';return;}
+  bh.innerHTML='';
+  bills.slice(0,50).forEach(function(b,i){
+    var d=document.createElement('div');d.className='bi';
+    var left=document.createElement('div');
+    var no=document.createElement('div');no.className='bi-no';no.textContent=b.no+' · '+b.customer;
+    var sub2=document.createElement('div');sub2.className='bi-sub';sub2.textContent=b.items.length+' sp · '+b.pay;
+    left.appendChild(no);left.appendChild(sub2);
+    var right=document.createElement('div');
+    var amt=document.createElement('div');amt.className='bi-amt';amt.textContent=fmt(b.tot);
+    var dt=document.createElement('div');dt.className='bi-dt';dt.textContent=b.month+' · '+b.date;
+    right.appendChild(amt);right.appendChild(dt);
+    d.appendChild(left);d.appendChild(right);
+    d.onclick=(function(idx){return function(){showBill(idx);};})(i);
+    bh.appendChild(d);
+  });
+}
+function clearBills(){
+  if(!bills.length){toast('Chưa có bill');return;}
+  if(!confirm('Xóa '+bills.length+' bill?'))return;
+  bills=[];bCnt=1;sv();updNo();renderRev();toast('🗑️ Đã xóa');
+}
+
+// SHOW BILL MODAL
+function showBill(i){
+  curBillIdx=i;
+  var b=bills[i];
+  document.getElementById('bmt').textContent=b.no+' · '+b.customer;
+  var bmb=document.getElementById('bmb');
+  bmb.innerHTML='';
+
+  // Header info
+  var hdr=document.createElement('div');
+  hdr.style.cssText='font-size:12px;color:var(--muted);margin-bottom:12px;padding:10px 12px;background:#F8FAFC;border-radius:9px;line-height:1.7';
+  hdr.innerHTML='📅 '+b.month+' · '+b.date+'<br>📱 '+(b.phone||'—')+'<br>💳 '+b.pay;
+  bmb.appendChild(hdr);
+
+  // Items with images
+  var itemsLabel=document.createElement('div');
+  itemsLabel.style.cssText='font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px';
+  itemsLabel.textContent='Sản Phẩm';
+  bmb.appendChild(itemsLabel);
+
+  b.items.forEach(function(it){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:11px;padding:10px;background:#fff;border:1px solid var(--border);border-radius:10px;margin-bottom:8px';
+
+    // Image
+    var imgBox=document.createElement('div');
+    imgBox.style.cssText='width:56px;height:56px;border-radius:9px;flex-shrink:0;overflow:hidden;background:#EEF2F7;display:flex;align-items:center;justify-content:center;font-size:26px;border:1px solid var(--border)';
+    if(it.imgData){
+      var im=document.createElement('img');
+      im.src=it.imgData;im.style.cssText='width:100%;height:100%;object-fit:cover';
+      imgBox.appendChild(im);
+    } else {
+      imgBox.textContent=it.img||'🎁';
+    }
+
+    // Info
+    var info=document.createElement('div');info.style.flex='1';info.style.minWidth='0';
+    var nm=document.createElement('div');nm.style.cssText='font-size:13px;font-weight:700;color:var(--navy);line-height:1.4';nm.textContent=it.name;
+    var meta=document.createElement('div');meta.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-top:5px';
+    var ql=document.createElement('span');ql.style.cssText='font-size:12px;color:var(--muted);background:#F0F4F8;padding:2px 8px;border-radius:20px';ql.textContent='x'+it.qty;
+    var pr=document.createElement('span');pr.style.cssText='font-size:14px;font-weight:800;color:var(--green)';pr.textContent=fmt(it.sub);
+    meta.appendChild(ql);meta.appendChild(pr);
+    info.appendChild(nm);info.appendChild(meta);
+
+    row.appendChild(imgBox);row.appendChild(info);
+    bmb.appendChild(row);
+  });
+
+  // Totals
+  var totBox=document.createElement('div');
+  totBox.style.cssText='background:linear-gradient(135deg,#EBF5FB,#EAFAF5);border-radius:10px;padding:12px;margin-top:4px;border:1px solid #C8E6C9';
+  var trows=[
+    {label:'Tạm tính',val:fmt(b.sub),color:''},
+    (b.da>0||b.sh>0)?{label:'Tạm tính',val:fmt(b.sub),color:''}:null,
+    b.da>0?{label:'Chiết khấu '+b.dp+'%',val:'-'+fmt(b.da),color:'var(--red)'}:null,
+    b.sh>0?{label:'Phí ship',val:fmt(b.sh),color:''}:null,
+    {label:'💰 TỔNG THANH TOÁN',val:fmt(b.tot),color:'var(--green)',bold:true}
+  ];
+  trows.forEach(function(tr){
+    if(!tr)return;
+    var d=document.createElement('div');
+    d.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:5px 0;'+(tr.bold?'border-top:2px solid #9ED8B4;margin-top:4px;padding-top:9px':'border-top:1px dashed #C8E6C9');
+    var l=document.createElement('span');l.style.cssText='font-size:'+(tr.bold?'13':'12')+'px;font-weight:'+(tr.bold?'800':'500')+';color:'+(tr.bold?'var(--navy)':'var(--muted)');l.textContent=tr.label;
+    var v=document.createElement('span');v.style.cssText='font-size:'+(tr.bold?'16':'13')+'px;font-weight:800;color:'+(tr.color||'var(--navy)');v.textContent=tr.val;
+    d.appendChild(l);d.appendChild(v);totBox.appendChild(d);
+  });
+  bmb.appendChild(totBox);
+
+  // Note
+  if(b.note){
+    var noteEl=document.createElement('div');
+    noteEl.style.cssText='margin-top:10px;font-size:12px;color:var(--muted);background:#FFFBF0;border-radius:8px;padding:8px 11px;border:1px solid #F0E0B0';
+    noteEl.textContent='📝 '+b.note;
+    bmb.appendChild(noteEl);
+  }
+
+  // Share button
+  var shareBtn=document.createElement('button');
+  shareBtn.className='btn btn-nv';shareBtn.style.marginTop='12px';shareBtn.textContent='📸 Xem Bill Gửi Khách';
+  shareBtn.onclick=function(){viewBillForShare(i);};
+  bmb.appendChild(shareBtn);
+
+  document.getElementById('bm-view').style.display='block';
+  document.getElementById('bm-edit').style.display='none';
+  document.getElementById('billModal').classList.add('on');
+}
+
+// Full-screen bill view for sharing (no window.open - works in sandbox)
+function viewBillForShare(i){
+  buildShareOverlay(bills[i]);
+}
+
+function buildShareOverlay(b){
+  var ov=document.getElementById('billShareOv');
+  var box=document.getElementById('billShareBox');
+  box.innerHTML='';
+
+  // Header
+  var hd=document.createElement('div');
+  hd.style.cssText='background:linear-gradient(135deg,#1A3C5E,#1e6bab);padding:20px 16px;color:#fff;text-align:center;border-radius:16px 16px 0 0';
+  hd.innerHTML='<div style="font-size:22px;margin-bottom:4px">🛍️</div><div style="font-size:18px;font-weight:800">HÓA ĐƠN BÁN HÀNG</div><div style="font-size:11px;opacity:.75;margin-top:3px">Cảm ơn bạn đã mua sắm!</div>';
+  box.appendChild(hd);
+
+  // Info grid
+  var info=document.createElement('div');
+  info.style.cssText='padding:12px 16px;background:#F8FAFC;border-bottom:1px solid #eee;display:grid;grid-template-columns:1fr 1fr;gap:6px';
+  [['📋 Bill',b.no],['📅 Ngày',b.date],['👤 Khách',b.customer],['📱 SĐT',b.phone||'—']].forEach(function(pair){
+    var s=document.createElement('div');s.style.cssText='font-size:12px;color:#666';
+    s.innerHTML=pair[0]+': <b style="color:#1A3C5E">'+pair[1]+'</b>';
+    info.appendChild(s);
+  });
+  box.appendChild(info);
+
+  // Items
+  var itemsWrap=document.createElement('div');itemsWrap.style.padding='0 16px';
+  b.items.forEach(function(it){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #F5F5F5';
+    var imgBox=document.createElement('div');
+    imgBox.style.cssText='width:64px;height:64px;border-radius:10px;flex-shrink:0;overflow:hidden;background:#EEF2F7;display:flex;align-items:center;justify-content:center;font-size:30px;border:1px solid #eee';
+    if(it.imgData){var im=document.createElement('img');im.src=it.imgData;im.style.cssText='width:100%;height:100%;object-fit:cover';imgBox.appendChild(im);}
+    else{imgBox.textContent=it.img||'🎁';}
+    var info2=document.createElement('div');info2.style.flex='1';
+    var nm=document.createElement('div');nm.style.cssText='font-size:14px;font-weight:700;color:#1A3C5E;line-height:1.4';nm.textContent=it.name;
+    var meta=document.createElement('div');meta.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-top:7px';
+    var ql=document.createElement('span');ql.style.cssText='font-size:13px;color:#888;background:#F5F5F5;padding:2px 9px;border-radius:20px';ql.textContent='x'+it.qty+' · '+fmt(it.price);
+    var pr=document.createElement('span');pr.style.cssText='font-size:15px;font-weight:800;color:#27AE60';pr.textContent=fmt(it.sub);
+    meta.appendChild(ql);meta.appendChild(pr);
+    info2.appendChild(nm);info2.appendChild(meta);
+    row.appendChild(imgBox);row.appendChild(info2);
+    itemsWrap.appendChild(row);
+  });
+  box.appendChild(itemsWrap);
+
+  // Totals
+  var tot=document.createElement('div');
+  tot.style.cssText='padding:14px 16px;background:linear-gradient(135deg,#EBF5FB,#EAFAF5)';
+  function addTotRow(lbl,val,color,big){
+    var d=document.createElement('div');
+    d.style.cssText='display:flex;justify-content:space-between;padding:'+(big?'10px 0 5px':'5px 0')+';border-top:'+(big?'2px solid #27AE60':'1px dashed #C8E6C9');
+    var l=document.createElement('span');l.style.cssText='font-size:'+(big?'14':'12')+'px;font-weight:'+(big?'800':'500')+';color:'+(big?'#1A3C5E':'#8696A7');l.textContent=lbl;
+    var v=document.createElement('span');v.style.cssText='font-size:'+(big?'18':'13')+'px;font-weight:800;color:'+(color||'#2C3E50');v.textContent=val;
+    d.appendChild(l);d.appendChild(v);tot.appendChild(d);
+  }
+  if(b.da>0||b.sh>0){
+    addTotRow('Tạm tính',fmt(b.sub),'',false);
+    if(b.da>0){addTotRow('Chiết khấu '+b.dp+'%','-'+fmt(b.da),'#E74C3C',false);}
+    if(b.sh>0){addTotRow('Phí ship',fmt(b.sh),'',false);}
+  }
+  addTotRow('💰 TỔNG THANH TOÁN',fmt(b.tot),'#27AE60',true);
+  box.appendChild(tot);
+
+  // Note + footer
+  if(b.note){var nt=document.createElement('div');nt.style.cssText='padding:10px 16px;font-size:12px;color:#888;background:#FFFBF0;border-top:1px solid #F0E0B0';nt.textContent='📝 '+b.note;box.appendChild(nt);}
+  var ft=document.createElement('div');ft.style.cssText='text-align:center;padding:14px 16px;font-size:12px;color:#aaa;background:#fff;border-radius:0 0 16px 16px';ft.textContent='💳 '+b.pay+' · Xin chân thành cảm ơn! 🎁';box.appendChild(ft);
+
+  ov.style.display='flex';
+}
+function closeBillShare(){document.getElementById('billShareOv').style.display='none';}
+function switchToView(){
+  document.getElementById('bm-view').style.display='block';
+  document.getElementById('bm-edit').style.display='none';
+}
+// ebItems holds the live item list being edited
+var ebItems=[];
+
+function switchToEdit(){
+  if(curBillIdx<0)return;
+  var b=bills[curBillIdx];
+  document.getElementById('eb-no').value=b.no;
+  document.getElementById('eb-date').value=b.date;
+  document.getElementById('eb-name').value=b.customer;
+  document.getElementById('eb-phone').value=b.phone||'';
+  document.getElementById('eb-note').value=b.note||'';
+  var ms=['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+  document.getElementById('eb-month').selectedIndex=ms.indexOf(b.month);
+  document.querySelectorAll('#eb-pays .pay').forEach(function(el){el.classList.toggle('on',el.textContent.trim()===b.pay);});
+  document.getElementById('eb-disc').value=b.dp||0;
+  document.getElementById('eb-ship').value=b.sh||0;
+  // Deep-copy items into ebItems
+  ebItems=b.items.map(function(it){return{name:it.name,qty:it.qty,price:it.price,sub:it.sub,img:it.img||'🎁',imgData:it.imgData||null};});
+  renderEbItems();
+  calcEB();
+  document.getElementById('bm-view').style.display='none';
+  document.getElementById('bm-edit').style.display='block';
+}
+
+function renderEbItems(){
+  var el=document.getElementById('eb-items');
+  el.innerHTML='';
+  ebItems.forEach(function(it,idx){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;gap:10px;align-items:center;padding:9px;background:#fff;border:1px solid var(--border);border-radius:9px;margin-bottom:7px';
+
+    // Image
+    var imgBox=document.createElement('div');
+    imgBox.style.cssText='width:44px;height:44px;border-radius:8px;flex-shrink:0;overflow:hidden;background:#EEF2F7;display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid var(--border)';
+    if(it.imgData){var im=document.createElement('img');im.src=it.imgData;im.style.cssText='width:100%;height:100%;object-fit:cover';imgBox.appendChild(im);}
+    else{imgBox.textContent=it.img||'🎁';}
+
+    // Info + inputs
+    var mid=document.createElement('div');mid.style.flex='1';mid.style.minWidth='0';
+    var nm=document.createElement('div');nm.style.cssText='font-size:12px;font-weight:700;color:var(--navy);margin-bottom:5px;line-height:1.3';nm.textContent=it.name;
+    var inp=document.createElement('div');inp.style.cssText='display:flex;gap:6px;align-items:center';
+    // SL
+    var slWrap=document.createElement('div');slWrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:2px';
+    var slLbl=document.createElement('span');slLbl.style.cssText='font-size:9px;font-weight:700;color:var(--muted)';slLbl.textContent='SL';
+    var slInp=document.createElement('input');slInp.type='number';slInp.min='1';slInp.value=it.qty;
+    slInp.style.cssText='width:52px;padding:6px 4px;text-align:center;font-size:13px;font-weight:700';
+    slInp.oninput=(function(i){return function(){ebItems[i].qty=Math.max(1,parseInt(this.value)||1);ebItems[i].sub=ebItems[i].qty*ebItems[i].price;calcEB();};})(idx);
+    slWrap.appendChild(slLbl);slWrap.appendChild(slInp);
+    // Giá
+    var prWrap=document.createElement('div');prWrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:2px;flex:1';
+    var prLbl=document.createElement('span');prLbl.style.cssText='font-size:9px;font-weight:700;color:var(--muted)';prLbl.textContent='Đơn Giá';
+    var prInp=document.createElement('input');prInp.type='number';prInp.value=it.price;
+    prInp.style.cssText='width:100%;padding:6px 8px;font-size:13px';
+    prInp.oninput=(function(i){return function(){ebItems[i].price=parseInt(this.value)||0;ebItems[i].sub=ebItems[i].qty*ebItems[i].price;calcEB();};})(idx);
+    prWrap.appendChild(prLbl);prWrap.appendChild(prInp);
+    inp.appendChild(slWrap);inp.appendChild(prWrap);
+    mid.appendChild(nm);mid.appendChild(inp);
+
+    // Delete button
+    var delBtn=document.createElement('button');
+    delBtn.style.cssText='background:#FEE2E2;color:var(--red);border:none;border-radius:7px;padding:6px 9px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;align-self:center';
+    delBtn.textContent='✕';
+    delBtn.onclick=(function(i){return function(){ebItems.splice(i,1);renderEbItems();calcEB();};})(idx);
+
+    row.appendChild(imgBox);row.appendChild(mid);row.appendChild(delBtn);
+    el.appendChild(row);
+  });
+
+  // "Thêm sản phẩm" button
+  var addBtn=document.createElement('button');
+  addBtn.className='btn btn-ol';
+  addBtn.style.cssText='font-size:13px;padding:11px;margin-top:6px;border-width:2px;font-weight:800';
+  addBtn.textContent='➕ Thêm sản phẩm';
+  addBtn.type='button';
+  addBtn.onclick=function(e){e.preventDefault();e.stopPropagation();openPickForEdit();};
+  el.appendChild(addBtn);
+}
+function setEBPay(el){document.querySelectorAll('#eb-pays .pay').forEach(function(x){x.classList.remove('on');});el.classList.add('on');}
+function calcEB(){
+  var sub=ebItems.reduce(function(s,it){return s+it.qty*it.price;},0);
+  var dp=parseFloat(document.getElementById('eb-disc').value)||0;
+  var sh=parseInt(document.getElementById('eb-ship').value)||0;
+  var da=Math.round(sub*dp/100);
+  document.getElementById('eb-total').textContent=fmt(sub-da+sh);
+}
+
+// Pick product to add into edit bill
+function openPickForEdit(){
+  pickRow='EDIT';
+  renderPick(pf);
+  var pm=document.getElementById('pickModal');
+  pm.classList.add('on');
+  pm.style.display='flex';
+  // Scroll pick list to top
+  var sh=pm.querySelector('.sh');
+  if(sh)sh.scrollTop=0;
+}
+function saveEditBill(){
+  if(curBillIdx<0)return;
+  if(ebItems.length===0){toast('⚠️ Bill cần ít nhất 1 sản phẩm!');return;}
+  var b=bills[curBillIdx];
+  b.no=document.getElementById('eb-no').value;
+  b.date=document.getElementById('eb-date').value;
+  b.customer=document.getElementById('eb-name').value.trim()||b.customer;
+  b.phone=document.getElementById('eb-phone').value;
+  b.note=document.getElementById('eb-note').value;
+  var ms=['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+  b.month=ms[document.getElementById('eb-month').selectedIndex];
+  var payEl=document.querySelector('#eb-pays .pay.on');
+  if(payEl)b.pay=payEl.textContent.trim();
+  b.dp=parseFloat(document.getElementById('eb-disc').value)||0;
+  b.sh=parseInt(document.getElementById('eb-ship').value)||0;
+  b.items=ebItems.map(function(it){return{prodId:it.prodId||null,name:it.name,qty:it.qty,price:it.price,sub:it.qty*it.price,img:it.img||'🎁',imgData:it.imgData||null};});
+  var sub=b.items.reduce(function(s,it){return s+it.sub;},0);
+  b.sub=sub;b.da=Math.round(sub*b.dp/100);b.tot=sub-b.da+b.sh;
+  sv();renderRev();
+  document.getElementById('billModal').classList.remove('on');
+  toast('✅ Đã cập nhật bill '+b.no);
+}
+function deleteEditBill(){
+  if(curBillIdx<0)return;
+  var b=bills[curBillIdx];
+  if(!confirm('Xóa bill '+b.no+'?'))return;
+  bills.splice(curBillIdx,1);sv();renderRev();
+  document.getElementById('billModal').classList.remove('on');
+  toast('🗑️ Đã xóa bill '+b.no);
+}
+
+// BACKUP & RESTORE
+function exportData(){
+  try{
+    var data={prods:prods,bills:bills,bCnt:bCnt,exportedAt:new Date().toISOString(),version:2};
+    var json=JSON.stringify(data);
+    // Show backup text in overlay for user to copy or use
+    showBackupOverlay(json);
+  }catch(e){toast('❌ Lỗi xuất: '+e.message);}
+}
+
+function showBackupOverlay(json){
+  var ov=document.getElementById('backupOv');
+  var ta=document.getElementById('backupTa');
+  ta.value=json;
+  ov.style.display='flex';
+  // Try auto download via data URI (works on most mobile browsers)
+  try{
+    var d=new Date();
+    var fname='BanHang_'+d.getFullYear()+('0'+(d.getMonth()+1)).slice(-2)+('0'+d.getDate()).slice(-2)+'.json';
+    var uri='data:application/json;charset=utf-8,'+encodeURIComponent(json);
+    var a=document.createElement('a');
+    a.href=uri; a.download=fname; a.style.display='none';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){document.body.removeChild(a);},1000);
+    toast('📤 Đã tải file backup!');
+  }catch(e){
+    // If auto-download fails, user can copy the text manually
+    toast('📋 Hãy copy toàn bộ text và lưu vào file .json');
+  }
+}
+
+function copyBackup(){
+  var ta=document.getElementById('backupTa');
+  ta.select();
+  try{
+    document.execCommand('copy');
+    toast('✅ Đã copy! Dán vào Notes/Keep rồi lưu lại.');
+  }catch(e){
+    toast('Hãy bấm giữ text rồi chọn Copy All');
+  }
+}
+function closeBackupOv(){document.getElementById('backupOv').style.display='none';}
+function importData(input){
+  var file=input.files[0];if(!file)return;
+  var rd=new FileReader();
+  rd.onload=function(e){ doImport(e.target.result); };
+  rd.readAsText(file);
+  input.value='';
+}
+
+function doImport(jsonStr){
+  try{
+    var data=JSON.parse(jsonStr.trim());
+    if(!data.prods||!data.bills)throw new Error('Dữ liệu không hợp lệ');
+    if(!confirm('Nhập backup sẽ ghi đè dữ liệu hiện tại ('+bills.length+' bill cũ). Tiếp tục?'))return;
+    prods=data.prods; bills=data.bills; bCnt=data.bCnt||1;
+    sv(); renderRev(); renderCat(); updNo();
+    toast('✅ Khôi phục '+bills.length+' bill + '+prods.length+' sản phẩm!');
+  }catch(err){ toast('❌ Lỗi đọc backup: '+err.message); }
+}
+
+function importFromText(){
+  var ta=document.getElementById('importTa');
+  if(!ta.value.trim()){toast('⚠️ Dán dữ liệu backup vào ô trên trước!');return;}
+  doImport(ta.value.trim());
+  document.getElementById('importOv').style.display='none';
+  ta.value='';
+}
+function showImportOv(){document.getElementById('importOv').style.display='flex';}
+function closeImportOv(){document.getElementById('importOv').style.display='none';}
+
+// CATALOG
+function fcat(f,el){cf=f;document.querySelectorAll('#ftabs .ft').forEach(function(t){t.classList.remove('on');});el.classList.add('on');renderCat();}
+function renderCat(){
+  var list=cf==='all'?prods:prods.filter(function(p){return p.type===cf;});
+  var el=document.getElementById('catlist');el.innerHTML='';
+  if(!list.length){var p=document.createElement('p');p.style.cssText='text-align:center;color:var(--muted);padding:28px 0;font-size:13px';p.textContent='Không có sản phẩm';el.appendChild(p);return;}
+  list.forEach(function(p){el.appendChild(makePItem(p));});
+}
+function makePItem(p){
+  var wrap=document.createElement('div');wrap.className='pi';wrap.id='pi'+p.id;
+  var main=document.createElement('div');main.className='pi-main';
+  var imgW=document.createElement('div');imgW.className='pi-img';imgW.id='pimg'+p.id;
+  setImgContent(imgW,p);
+  var imgBtn=document.createElement('div');imgBtn.className='pi-img-btn';imgBtn.textContent='📷 Đổi ảnh';
+  imgBtn.onclick=function(e){e.stopPropagation();document.getElementById('fi'+p.id).click();};
+  imgW.appendChild(imgBtn);
+  var fi=document.createElement('input');fi.type='file';fi.accept='image/*';fi.id='fi'+p.id;fi.style.display='none';
+  fi.onchange=function(){uploadImg(p.id,this);};
+  var info=document.createElement('div');info.className='pi-info';
+  var nm=document.createElement('div');nm.className='pi-name';nm.id='pn'+p.id;nm.textContent=p.name;
+  var sb=document.createElement('div');sb.className='pi-sub';sb.id='ps'+p.id;sb.textContent='🎨 '+p.color+(p.note?' · '+p.note:'');
+  var pr=document.createElement('div');pr.className='pi-price';pr.id='pp'+p.id;pr.textContent=fmt(p.price);
+  info.appendChild(nm);info.appendChild(sb);info.appendChild(pr);
+  var right=document.createElement('div');right.className='pi-right';
+  var badge=document.createElement('span');badge.className='pi-badge '+(p.type==='binh'?'pb-b':'pb-g');badge.id='pb'+p.id;badge.textContent=p.type==='binh'?'Bình':'Gấu';
+  var ebtn=document.createElement('button');ebtn.className='pi-edit-btn';ebtn.id='pe'+p.id;ebtn.textContent='✏️ Sửa';
+  ebtn.onclick=function(){toggleEP(p.id);};
+  right.appendChild(badge);right.appendChild(ebtn);
+  main.appendChild(imgW);main.appendChild(fi);main.appendChild(info);main.appendChild(right);
+  wrap.appendChild(main);
+  var ep=document.createElement('div');ep.className='pi-ep';ep.id='ep'+p.id;
+  var fg1=mkFG('Tên Sản Phẩm');var i1=mkInp('text',p.name,'en'+p.id,'');fg1.appendChild(i1);ep.appendChild(fg1);
+  var fg2=mkFG('Màu / Mẫu Mã');var i2=mkInp('text',p.color,'ec'+p.id,'');fg2.appendChild(i2);ep.appendChild(fg2);
+  var g2=document.createElement('div');g2.className='g2';
+  var fg3=mkFG('Đơn Giá (₫)');var i3=mkInp('number',p.price,'epr'+p.id,'numeric');fg3.appendChild(i3);
+  var fg4=mkFG('Ghi Chú');var i4=mkInp('text',p.note||'','eno'+p.id,'');fg4.appendChild(i4);
+  g2.appendChild(fg3);g2.appendChild(fg4);ep.appendChild(g2);
+  var fg5=mkFG('Loại');
+  var sel=document.createElement('select');sel.id='et'+p.id;
+  [['binh','🧊 Bình Giữ Nhiệt'],['gau','🧸 Gấu Bông']].forEach(function(pair){var opt=document.createElement('option');opt.value=pair[0];opt.textContent=pair[1];if(pair[0]===p.type)opt.selected=true;sel.appendChild(opt);});
+  fg5.appendChild(sel);ep.appendChild(fg5);
+  var bg=document.createElement('div');bg.className='bgrp';
+  var bs=document.createElement('button');bs.className='btn btn-gn';bs.style.flex='2';bs.textContent='💾 Lưu';bs.onclick=function(){doEdit(p.id);};
+  var bd=document.createElement('button');bd.className='btn btn-rd btn-sm';bd.textContent='🗑️ Xóa';bd.onclick=function(){doDelProd(p.id);};
+  var bc=document.createElement('button');bc.className='btn btn-ol btn-sm';bc.textContent='Hủy';bc.onclick=function(){toggleEP(p.id);};
+  bg.appendChild(bs);bg.appendChild(bd);bg.appendChild(bc);ep.appendChild(bg);
+  wrap.appendChild(ep);return wrap;
+}
+function mkFG(lbl){var fg=document.createElement('div');fg.className='fg';var lb=document.createElement('label');lb.className='lbl';lb.textContent=lbl;fg.appendChild(lb);return fg;}
+function mkInp(type,val,id,mode){var inp=document.createElement('input');inp.type=type;inp.id=id;inp.value=val;if(mode)inp.setAttribute('inputmode',mode);return inp;}
+function setImgContent(box,p){var btn=box.querySelector('.pi-img-btn');box.innerHTML='';if(p.imgData){var im=document.createElement('img');im.src=p.imgData;im.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:10px';box.appendChild(im);}else{box.appendChild(document.createTextNode(p.img||'🎁'));}if(btn)box.appendChild(btn);}
+function toggleEP(id){var ep=document.getElementById('ep'+id);var btn=document.getElementById('pe'+id);if(!ep||!btn)return;var isOpen=ep.style.display==='block';ep.style.display=isOpen?'none':'block';btn.textContent=isOpen?'✏️ Sửa':'✕ Đóng';btn.classList.toggle('on',!isOpen);if(!isOpen){setTimeout(function(){var el=document.getElementById('pi'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'nearest'});},50);}}
+function doEdit(id){
+  var p=prods.find(function(x){return x.id===id;});if(!p)return;
+  var name=document.getElementById('en'+id).value.trim();
+  var color=document.getElementById('ec'+id).value.trim();
+  var price=parseInt(document.getElementById('epr'+id).value)||0;
+  var note=document.getElementById('eno'+id).value.trim();
+  var type=document.getElementById('et'+id).value;
+  if(!name||!color||!price){toast('⚠️ Điền đủ Tên, Màu, Giá!');return;}
+  var oldLabel=p.name+' · '+p.color;
+  var newLabel=name+' · '+color;
+  p.name=name;p.color=color;p.price=price;p.note=note;p.type=type;
+  // Cập nhật tên + giá trong tất cả bill đã lưu
+  syncProdInBills(id,newLabel,price,p.imgData);
+  sv();
+  // Cập nhật UI catalog
+  var el;
+  el=document.getElementById('pn'+id);if(el)el.textContent=name;
+  el=document.getElementById('ps'+id);if(el)el.textContent='🎨 '+color+(note?' · '+note:'');
+  el=document.getElementById('pp'+id);if(el)el.textContent=fmt(price);
+  el=document.getElementById('pb'+id);if(el){el.textContent=type==='binh'?'Bình':'Gấu';el.className='pi-badge '+(type==='binh'?'pb-b':'pb-g');}
+  toggleEP(id);toast('✅ Đã cập nhật: '+name);
+}
+function doDelProd(id){if(!confirm('Xóa sản phẩm này?'))return;prods=prods.filter(function(x){return x.id!==id;});sv();renderCat();toast('🗑️ Đã xóa');}
+function uploadImg(id,input){
+  var file=input.files[0];if(!file)return;
+  var rd=new FileReader();
+  rd.onload=function(e){
+    var p=prods.find(function(x){return x.id===id;});if(!p)return;
+    p.imgData=e.target.result;
+    // Cập nhật ảnh trong tất cả bill đã lưu
+    syncProdInBills(id,p.name+' · '+p.color,p.price,p.imgData);
+    sv();
+    var box=document.getElementById('pimg'+id);if(box)setImgContent(box,p);
+    toast('✅ Đã cập nhật ảnh!');
+  };
+  rd.readAsDataURL(file);
+}
+
+// Đồng bộ tên/giá/ảnh sản phẩm vào tất cả bill đã lưu có chứa SP đó
+// Chỉ cập nhật ảnh và tên hiển thị, KHÔNG đổi giá đã chốt trong bill cũ
+function syncProdInBills(prodId,newLabel,newPrice,newImgData){
+  bills.forEach(function(b){
+    b.items.forEach(function(it){
+      // Match bằng prodId nếu có, hoặc match bằng tên cũ
+      if(it.prodId===prodId){
+        it.name=newLabel;
+        it.imgData=newImgData||it.imgData;
+        // Không tự đổi giá bill cũ - giá đã chốt khi bán
+      }
+    });
+  });
+}
+
+// ADD PRODUCT
+function toggleAdd(){var f=document.getElementById('addform');f.classList.toggle('on');if(f.classList.contains('on'))f.scrollIntoView({behavior:'smooth'});}
+function previewNew(input){var file=input.files[0];if(!file)return;var rd=new FileReader();rd.onload=function(e){addImg=e.target.result;var prev=document.getElementById('nprev');prev.src=addImg;prev.style.display='block';document.getElementById('nph').style.display='none';};rd.readAsDataURL(file);}
+function saveNew(){
+  var type=document.getElementById('ntype').value;
+  var name=document.getElementById('nname').value.trim();
+  var color=document.getElementById('ncolor').value.trim();
+  var price=parseInt(document.getElementById('nprice').value)||0;
+  var note=document.getElementById('nnote').value.trim();
+  if(!name||!color||!price){toast('⚠️ Điền đủ: Tên, Màu, Đơn giá!');return;}
+  var id=(type==='binh'?'NB':'NG')+Date.now();
+  prods.push({id:id,type:type,name:name,color:color,price:price,note:note,img:type==='binh'?'🍶':'🧸',imgData:addImg||null});
+  sv();renderCat();
+  ['nname','ncolor','nprice','nnote'].forEach(function(x){document.getElementById(x).value='';});
+  document.getElementById('nimg').value='';
+  document.getElementById('nprev').style.display='none';document.getElementById('nph').style.display='block';
+  addImg=null;document.getElementById('addform').classList.remove('on');
+  toast('✅ Đã thêm: '+name+' · '+color);
+}
+
+// TOAST
+var _tt;
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(_tt);_tt=setTimeout(function(){t.classList.remove('on');},2800);}
+
+window.addEventListener('DOMContentLoaded',init);
+</script>
+
+<!-- OVERLAY: Bill đẹp gửi khách -->
+<div id="billShareOv" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;overflow-y:auto;padding:16px">
+  <div style="width:100%;max-width:480px;margin:0 auto">
+    <div id="billShareBox" style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.25)"></div>
+    <button onclick="closeBillShare()" style="display:block;width:100%;margin-top:12px;padding:13px;background:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;color:#1A3C5E;cursor:pointer;font-family:inherit">✕ Đóng</button>
+    <p style="text-align:center;color:rgba(255,255,255,.7);font-size:11px;margin-top:8px">📸 Chụp màn hình để gửi khách</p>
+  </div>
+</div>
+
+<!-- OVERLAY: Backup text -->
+<div id="backupOv" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;border-radius:16px;padding:20px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto">
+    <div style="font-size:16px;font-weight:800;color:#1A3C5E;margin-bottom:6px">📤 Backup Dữ Liệu</div>
+    <p style="font-size:12px;color:#8696A7;margin-bottom:12px;line-height:1.6">File backup đã được tải về (nếu trình duyệt cho phép). Nếu không thấy file, nhấn <b>Copy Text</b> rồi dán vào ứng dụng Ghi chú / Google Keep và lưu lại để dùng khi cần khôi phục.</p>
+    <textarea id="backupTa" readonly style="width:100%;height:120px;font-size:11px;font-family:monospace;padding:10px;border:1.5px solid #D5DDE8;border-radius:9px;background:#F6F8FA;resize:none;color:#2C3E50"></textarea>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button onclick="copyBackup()" style="flex:2;padding:12px;background:linear-gradient(135deg,#27AE60,#2ecc71);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">📋 Copy Text Backup</button>
+      <button onclick="closeBackupOv()" style="flex:1;padding:12px;background:#F0F4F8;color:#1A3C5E;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- OVERLAY: Import from text -->
+<div id="importOv" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;border-radius:16px;padding:20px;width:100%;max-width:480px">
+    <div style="font-size:16px;font-weight:800;color:#1A3C5E;margin-bottom:6px">📥 Nhập Backup</div>
+    <p style="font-size:12px;color:#8696A7;margin-bottom:12px;line-height:1.6">Dán toàn bộ nội dung file backup vào ô bên dưới rồi nhấn Khôi Phục. Hoặc chọn file .json từ máy.</p>
+    <textarea id="importTa" placeholder="Dán nội dung backup vào đây..." style="width:100%;height:130px;font-size:12px;font-family:monospace;padding:10px;border:1.5px solid #D5DDE8;border-radius:9px;background:#F6F8FA;resize:none;margin-bottom:10px;color:#2C3E50"></textarea>
+    <div style="margin-bottom:12px">
+      <label style="font-size:11px;font-weight:700;color:#8696A7;display:block;margin-bottom:6px">HOẶC CHỌN FILE .JSON</label>
+      <input type="file" accept=".json,.txt" onchange="importData(this)" style="font-size:13px;width:100%">
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="importFromText()" style="flex:2;padding:12px;background:linear-gradient(135deg,#1A3C5E,#2563a8);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">✅ Khôi Phục Dữ Liệu</button>
+      <button onclick="closeImportOv()" style="flex:1;padding:12px;background:#F0F4F8;color:#1A3C5E;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Hủy</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
